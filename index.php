@@ -56,16 +56,57 @@
                        </div>
                     </div>
                     <!--end header row-->
-                    <form>
-                    <div class="container">
-                        <!--row1-->
-                        <div class="row mt-3">
-                            <div class="col-sm-6 ">
-                                <div class=" col-auto mb-3 mt-3">
-                                    <label for="Fullname" class="form-label">Full Name</label>
-                                    <input type="text" class="form-control shadow-none border-success" id="Fullname" name="Fullname" placeholder="Enter Fullname">
-                                  </div>
+                    <form method="POST" >
+                            <div class="container">
+                                <!--row1-->
+                                <div class="row mt-3">
+                                    <div class="col-sm-6 ">
+                                        <div class=" col-auto mb-3 mt-3">
+                                            <label for="Fullname" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control shadow-none border-success" id="Fullname" name="Fullname" placeholder="Enter Fullname">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class=" col-auto mb-3 mt-3">
+                                            <label for="Rollno" class="form-label">RollNo/Employee Id</label>
+                                            <input type="text" class="form-control shadow-none border-success" id="Rollno" name="Rollno" placeholder="Enter Rollno">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end row1-->
+                                <!--row2--->
+                                <div class="row ">
+                                    <div class="col-sm-6 ">
+                                        <div class=" col-auto mb-3 ">
+                                            <label for="Gender" class="form-label">Gender</label>
+                                            <select class="form-select shadow-none border-success" aria-label="Default select example" name="Gender" id="Gender">
+                                                <option selected>--select--</option>
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class=" col-auto mb-3">
+                                            <label for="email" class="form-label">Email<span class="ms-2">(Use your domain mail)</span></label>
+                                            <input type="email" class="form-control shadow-none border-success" id="Email" name="Email" placeholder="youremail@domain.com">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end row2-->
+                                <!--row3-->
+                                <div class="row mb-3">
+                                    <div class="mb-3">
+                                        <label for="yourgrievance" class="form-label">Your Grievance</label>
+                                        <textarea class="form-control shadow-none border-success" id="grievance" name="grievance" rows="5" placeholder="Give a brief note of your grievance"></textarea>
+                                    </div>
+                                </div>
+                                <!--end row3-->
+                                <div class="mb-3 text-center">
+                                    <button class="btn  btn-success shadow-none border-none w-25" style="background-color: #5cb85c;"><i class="far fa-paper-plane"></i><span class="ms-2">Send</span></button>
+                                </div>
                             </div>
+<<<<<<< Updated upstream:index.php
                             <div class="col-sm-6">
                                 <div class=" col-auto mb-3 mt-3">
                                     <label for="Rollno" class="form-label">RollNo/Employee Id</label>
@@ -106,6 +147,8 @@
                             <button class="btn  btn-success shadow-none border-none " style="background-color: #5cb85c;"><i class="far fa-paper-plane"></i><span class="ms-2">Send</span></button>
                         </div>
                     </div>
+=======
+>>>>>>> Stashed changes:index.html
                     </form>
                 </div>
             </div>
