@@ -1,29 +1,42 @@
 <?php
 include('include\conn.php');
-$msg="";
-if(isset($_POST['send'])){
-	$Fullname=$_POST['Fullname'];
-    $Rollno=$_POST['Rollno'];
-    $Gender=$_POST['Gender'];
-    $Email=$_POST['Email'];
-    $grievance=$_POST['grievance'];
-    $verification_id=rand(111111111,999999999);
-    $sql = "INSERT INTO `complaints` (`Fullname`,`Rollno`,`Gender`,`Email`,`grievance`,`verification_id`) VALUES ('$Fullname','$Rollno','$Gender','$Email','$grievance','$verification_id')";
-    $my_query=mysqli_query($conn,$sql);
-    if($my_query)
-        echo '<script>alert("Success");</script>';
-    else
-        echo '<script>alert("Failed");</script>';    
-      
-    
-	if($Email){
-		echo '<script>alert("redirecting");</script>';
-		header ("Location: http://localhost/grievance-cell/response.php?id=$verification_id");
-	}
-}
+$verification_id=mysqli_real_escape_string($conn,$_GET['id']);
+
+$sql="SELECT * from `complaints` where verification_id=$verification_id";
+$query=mysqli_query($conn,$sql);
+$row=mysqli_fetch_array($query);
+
+$mailHtml="Please confirm your account registration by clicking the button or link below: <a href='http://localhost/grievance-cell/mailer.php?id=$verification_id'>http://localhost/grievance-cell/mailer.php?id=$verification_id</a>";
+$subject='Account Verification';
+$Email=$row['Email'];
+require './include/PHPMailer.php';
+require './include/SMTP.php';
+require './include/Exception.php';
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+$mail= new PHPMailer();
+$mail->isSMTP();
+$mail->Host="smtp.gmail.com";
+$mail->SMTPAuth="true";
+$mail->SMTPSecure="tls";
+$mail->Port="587";
+$mail->Username="dtearthmovers1026@gmail.com";
+$mail->Password="anand@123";
+$mail->Subject=$subject;
+$mail->setFrom("dtearthmovers1026@gmail.com");
+$mail->Body=$mailHtml;
+$mail->addAddress($Email);
+if($mail->send())
+$msg="We've just sent a verification link to $Email. Please check your inbox and click on the link to get started. If you can't find this email (which could be due to spam filters), just request a new one here.";
+else
+echo '<script>alert("mail failed");</script>';
+$mail->smtpClose();
 
 ?>
-
 	<!DOCTYPE html>
 	<html lang="en">
 
@@ -53,7 +66,7 @@ if(isset($_POST['send'])){
 						<div class="text-white text-top" href="#">
 							<h3 class="ms-5">GRIEVANCE CELL</h3> </div>
 					</div>
-					<div class="nav-item d-flex"> <a href="index.php" class=" nav-link text-white h5">Home</a> <a class="nav-link text-white h5">about</a> <a class="nav-link text-white h5">Contact</a> </div>
+					<div class="nav-item d-flex"> <a href="index.php" class="nav-link text-white h5">Home</a> <a class="nav-link text-white h5">about</a> <a class="nav-link text-white h5">Contact</a> </div>
 				</div>
 			</nav>
 		</main>
@@ -70,6 +83,7 @@ if(isset($_POST['send'])){
 							</div>
 						</div>
 						<!--end header row-->
+            
 						<form method="POST">
 							<div class="container">
 								<!--row1-->
@@ -77,31 +91,28 @@ if(isset($_POST['send'])){
 									<div class="col-sm-6 ">
 										<div class=" col-auto mb-3 mt-3">
 											<label for="Fullname" class="form-label">Full Name</label>
-											<input type="text" class="form-control shadow-none border-success" id="Fullname" name="Fullname" placeholder="Enter Fullname"> </div>
+											<input type="text" class="form-control shadow-none border-success" id="Fullname" name="Fullname" placeholder="Enter Fullname" readonly value="<?php echo htmlentities($row['Fullname']) ?>" > </div>
 									</div>
 									<div class="col-sm-6">
 										<div class=" col-auto mb-3 mt-3">
 											<label for="Rollno" class="form-label">RollNo/Employee Id</label>
-											<input type="text" class="form-control shadow-none border-success" id="Rollno" name="Rollno" placeholder="Enter Rollno"> </div>
+											<input type="text" class="form-control shadow-none border-success" id="Rollno" name="Rollno" placeholder="Enter Rollno" readonly value="<?php echo htmlentities($row['Rollno']) ?>"> </div>
 									</div>
 								</div>
-								<!--end row1-->
+								<!--end row-->
 								<!--row2--->
 								<div class="row ">
 									<div class="col-sm-6 ">
 										<div class=" col-auto mb-3 ">
 											<label for="Gender" class="form-label">Gender</label>
-											<select class="form-select shadow-none border-success" aria-label="Default select example" name="Gender" id="Gender">
-												<option selected>--select--</option>
-												<option value="Male">Male</option>
-												<option value="Female">Female</option>
-											</select>
+											<input type="text" class="form-control shadow-none border-success" id="Gender" name="Gender" placeholder="Gender" readonly value="<?php echo htmlentities($row['Gender']) ?>">
+											
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class=" col-auto mb-3">
 											<label for="email" class="form-label">Email<span class="ms-2">(Use your domain mail)</span></label>
-											<input type="email" class="form-control shadow-none border-success" id="Email" name="Email" placeholder="youremail@domain.com"> </div>
+											<input type="email" class="form-control shadow-none border-success" id="Email" name="Email" placeholder="youremail@domain.com" readonly value="<?php echo htmlentities($row['Email']) ?>"> </div>
 									</div>
 								</div>
 								<!--end row2-->
@@ -109,11 +120,11 @@ if(isset($_POST['send'])){
 								<div class="row mb-3">
 									<div class="mb-3">
 										<label for="yourgrievance" class="form-label">Your Grievance</label>
-										<textarea class="form-control shadow-none border-success" id="grievance" name="grievance" rows="5" placeholder="Give a brief note of your grievance"></textarea>
+										<textarea class="form-control shadow-none border-success" value="" id="grievance" name="grievance" rows="5" placeholder="Give a brief note of your grievance" readonly  ><?php echo htmlentities($row['grievance']) ?></textarea>
 									</div>
 								</div>
 								<!--end row3-->
-								<div class="mb-3 text-center">
+								<div class="mb-3 text-center d-none">
 									<button name="send" type="submit" class="btn  btn-success shadow-none border-none w-25" style="background-color: #5cb85c;"><i class="far fa-paper-plane"></i><span class="ms-2">Send</span></button>
 								</div>
 								<?php
@@ -122,7 +133,9 @@ if(isset($_POST['send'])){
 										<h5 class="text-danger "><?php echo htmlentities("$msg"); ?></h5> </div>
 									<?php } ?>
 							</div>
+              
 						</form>
+            
 					</div>
 				</div>
 				<div class="col-sm-3 mt-5 p-2">
